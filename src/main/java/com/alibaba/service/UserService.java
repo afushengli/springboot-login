@@ -1,18 +1,27 @@
 package com.alibaba.service;
 
+import com.alibaba.bean.LoginLogger;
 import com.alibaba.bean.Result;
 import com.alibaba.bean.User;
+import com.alibaba.mapper.LoginLoggerMapper;
 import com.alibaba.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @Service
+@Slf4j
 @Transactional(rollbackFor = RuntimeException.class)
 public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private LoginLoggerMapper loginLoggerMapper;
     /**
      * 注册
      * @param user 参数封装
@@ -65,5 +74,13 @@ public class UserService {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public void  saveLogin(User user) {
+        log.info("---------------------login---------------------------");
+        LoginLogger loginLogger = new LoginLogger();
+        loginLogger.setUsername(user.getUsername());
+        loginLogger.setLoginDate( new Date());
+        loginLoggerMapper.loginLogger(loginLogger);
     }
 }
